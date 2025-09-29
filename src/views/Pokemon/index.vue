@@ -1,6 +1,5 @@
 <template>
   <div>
-    宝可梦
     <div class="type">
       <div v-for="id in 18" :key="id">
         <Attribute :id="`${id}`" />

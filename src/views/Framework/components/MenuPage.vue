@@ -1,13 +1,13 @@
 <template>
   <div class="menu-page">
-    <el-menu :default-active="option.menuList[0].key" class="el-menu-vertical-demo">
+    <el-menu :default-active="activePath" class="el-menu-vertical-demo">
       <el-menu-item
         v-for="item in option.menuList"
         :key="item.key"
         :index="item.key"
         @click="handleClick(item.key)"
       >
-        <img class="icons" :src="handleIcon(item.icon)" />
+        <img class="icons" :src="item.img" />
         <template #title> {{ item.title }}</template>
       </el-menu-item>
     </el-menu>
@@ -15,28 +15,40 @@
 </template>
 
 <script>
+import { IconMap } from 'element-plus'
 import option from './config/option.js'
+
+import defaultIcon from '@/assets/icons/精灵球.svg'
 
 export default {
   data() {
     return {
       option,
+      IconMap,
+      activePath: option.menuList[0].key,
     }
+  },
+  created() {
+    this.handleIcon()
+    this.checkUrl()
   },
   methods: {
     handleClick(index) {
-      this.$router.push({ path: index })
+      this.$router.push({ path: index }).then(() => {
+        // this.checkUrl()
+      })
     },
-    handleIcon(index) {
-      const icons = import.meta.glob('/src/assets/icons/*.svg', { eager: true })
-      const iconPath = `/src/assets/icons/${index}`
-      // 检查资源是否存在于导入的模块中
-      if (icons[iconPath]) {
-        return iconPath
-      } else {
-        const defaultPath = '/src/assets/icons/精灵球.svg'
-        return defaultPath
-      }
+    handleIcon() {
+      const icons = import.meta.glob('@/assets/icons/*.svg', { eager: true })
+      this.option.menuList.forEach((item) => {
+        const targetPath = `/src/assets/icons/${item.icon}`
+        item.img = icons[targetPath]?.default || defaultIcon
+      })
+    },
+    //检测url变化
+    checkUrl() {
+      const currentPath = this.$route.path.replace(/^\//, '').split('/')[0]
+      this.activePath = currentPath
     },
   },
 }

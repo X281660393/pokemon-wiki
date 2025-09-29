@@ -11,7 +11,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "build-development": "vite build --mode development",
+    "build-production": "vite build --mode production"
   },
   "dependencies": {
     "element-plus": "^2.11.3",
